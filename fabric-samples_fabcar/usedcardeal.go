@@ -255,7 +255,7 @@ func (s *SmartContract) ChangeCarOwner(ctx contractapi.TransactionContextInterfa
 	buyer, err_buyer := s.QueryCustomer(ctx, buyerNumber)
 	seller, err_seller := s.QueryCustomer(ctx, sellerNumber)
 
-	if err_car != nil || err_customer || err_seller {
+	if err_car != nil || err_customer != nil || err_seller != nil {
 		return err
 	}
 
