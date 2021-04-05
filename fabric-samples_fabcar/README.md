@@ -5,13 +5,19 @@ Refered to fabcar.go
 Added
 =====
 ## Struct
-Car - ProductionDate (string)
-      Appraiser (string)
-      MeasuredPrice (int)
+```
+//Car
+ProductionDate string
+Appraiser string
+MeasuredPrice int
+```      
       
-Customer - Name (string)
-           Amount (int)
-           
+```
+//Customer
+Name string
+Amount int
+```
+
 ## Function
 
 ```
