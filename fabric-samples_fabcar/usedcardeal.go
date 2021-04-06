@@ -19,21 +19,20 @@ type SmartContract struct {
 
 // Car describes basic details of what makes up a car
 type Car struct {
-	Make   string `json:"make"`
-	Model  string `json:"model"`
-	Colour string `json:"colour"`
-	Owner  string `json:"owner"`
+	Make           string `json:"make"`
+	Model          string `json:"model"`
+	Colour         string `json:"colour"`
+	Owner          string `json:"owner"`
 	ProductionDate string `json:"productiondata"`
 
-	Appraiser string `json:"appraiser"`
-	MeasuredPrice int `json:"measuredprice"`
+	Appraiser     string `json:"appraiser"`
+	MeasuredPrice int    `json:"measuredprice"`
 }
 
 type Customer struct {
-	Name string `json:"name"`
-	Amount int `json:"amout"`
+	Name   string `json:"name"`
+	Amount int    `json:"amout"`
 }
-
 
 // QueryResult structure used for handling result of query
 type QueryCarResult struct {
@@ -42,30 +41,30 @@ type QueryCarResult struct {
 }
 
 type QueryCustomerResult struct {
-	Key string `json:"Key"`
+	Key    string `json:"Key"`
 	Record *Customer
 }
 
 // InitLedger adds a base set of cars to the ledger
 func (s *SmartContract) InitLedger(ctx contractapi.TransactionContextInterface) error {
 	cars := []Car{
-		Car{Make: "Toyota", Model: "Prius", Colour: "blue", Owner: "Tomoko", ProductionDate: "2014-03-05", Appraiser: nil, MeasuredPrice: 0},
-		Car{Make: "Ford", Model: "Mustang", Colour: "red", Owner: "Brad", ProductionDate: "2017-01-08", Appraiser: nil, MeasuredPrice: 0},
-		Car{Make: "Hyundai", Model: "Tucson", Colour: "green", Owner: "Jin Soo", ProductionDate: "2008-09-05", Appraiser: nil, MeasuredPrice: 0},
-		Car{Make: "Volkswagen", Model: "Passat", Colour: "yellow", Owner: "Max", ProductionDate: "2019-01-05", Appraiser: nil, MeasuredPrice: 0},
-		Car{Make: "Tesla", Model: "S", Colour: "black", Owner: "Adriana", ProductionDate: "2001-01-21", Appraiser: nil, MeasuredPrice: 0},
-		Car{Make: "Peugeot", Model: "205", Colour: "purple", Owner: "Michel", ProductionDate: "2015-06-21", Appraiser: nil, MeasuredPrice: 0},
-		Car{Make: "Holden", Model: "Barina", Colour: "brown", Owner: "Shotaro", ProductionDate: "2019-04-01", Appraiser: nil, MeasuredPrice: 0},
+		Car{Make: "Toyota", Model: "Prius", Colour: "blue", Owner: "Tomoko", ProductionDate: "2014-03-05", Appraiser: "", MeasuredPrice: 0},
+		Car{Make: "Ford", Model: "Mustang", Colour: "red", Owner: "Brad", ProductionDate: "2017-01-08", Appraiser: "", MeasuredPrice: 0},
+		Car{Make: "Hyundai", Model: "Tucson", Colour: "green", Owner: "Jin Soo", ProductionDate: "2008-09-05", Appraiser: "", MeasuredPrice: 0},
+		Car{Make: "Volkswagen", Model: "Passat", Colour: "yellow", Owner: "Max", ProductionDate: "2019-01-05", Appraiser: "", MeasuredPrice: 0},
+		Car{Make: "Tesla", Model: "S", Colour: "black", Owner: "Adriana", ProductionDate: "2001-01-21", Appraiser: "", MeasuredPrice: 0},
+		Car{Make: "Peugeot", Model: "205", Colour: "purple", Owner: "Michel", ProductionDate: "2015-06-21", Appraiser: "", MeasuredPrice: 0},
+		Car{Make: "Holden", Model: "Barina", Colour: "brown", Owner: "Shotaro", ProductionDate: "2019-04-01", Appraiser: "", MeasuredPrice: 0},
 	}
 
 	customers := []Customer{
-		Customer{Name:"Tomoko", Amount:0},
-		Customer{Name:"Brad", Amount:0},
-		Customer{Name:"Jin Soo", Amount:0},
-		Customer{Name:"Max", Amount:0},
-		Customer{Name:"Adriana", Amount:0},
-		Customer{Name:"Michel", Amount:0},
-		Customer{Name:"Shotaro", Amount:0},
+		Customer{Name: "Tomoko", Amount: 0},
+		Customer{Name: "Brad", Amount: 0},
+		Customer{Name: "Jin Soo", Amount: 0},
+		Customer{Name: "Max", Amount: 0},
+		Customer{Name: "Adriana", Amount: 0},
+		Customer{Name: "Michel", Amount: 0},
+		Customer{Name: "Shotaro", Amount: 0},
 	}
 
 	for i, car := range cars {
@@ -88,17 +87,18 @@ func (s *SmartContract) InitLedger(ctx contractapi.TransactionContextInterface) 
 
 	return nil
 }
+
 /*********************************************************************************************************************************************************/
 // CreateCar adds a new car to the world state with given details
 func (s *SmartContract) CreateCar(ctx contractapi.TransactionContextInterface, carNumber string, make string, model string, colour string, owner string, productiondata string) error {
 	car := Car{
-		Make:   make,
-		Model:  model,
-		Colour: colour,
-		Owner:  owner,
+		Make:           make,
+		Model:          model,
+		Colour:         colour,
+		Owner:          owner,
 		ProductionDate: productiondata,
-		Appraiser: nil,
-		MeasuredPrice: 0,
+		Appraiser:      "",
+		MeasuredPrice:  0,
 	}
 
 	carAsBytes, _ := json.Marshal(car)
@@ -125,7 +125,7 @@ func (s *SmartContract) QueryCar(ctx contractapi.TransactionContextInterface, ca
 }
 
 // QueryAllCars returns all cars found in world state
-func (s *SmartContract) QueryAllCars(ctx contractapi.TransactionContextInterface) ([]QueryResult, error) {
+func (s *SmartContract) QueryAllCars(ctx contractapi.TransactionContextInterface) ([]QueryCarResult, error) {
 	startKey := ""
 	endKey := ""
 
@@ -136,7 +136,7 @@ func (s *SmartContract) QueryAllCars(ctx contractapi.TransactionContextInterface
 	}
 	defer resultsIterator.Close()
 
-	results := []QueryResult{}
+	results := []QueryCarResult{}
 
 	for resultsIterator.HasNext() {
 		queryResponse, err := resultsIterator.Next()
@@ -148,7 +148,7 @@ func (s *SmartContract) QueryAllCars(ctx contractapi.TransactionContextInterface
 		car := new(Car)
 		_ = json.Unmarshal(queryResponse.Value, car)
 
-		queryResult := QueryResult{Key: queryResponse.Key, Record: car}
+		queryResult := QueryCarResult{Key: queryResponse.Key, Record: car}
 		results = append(results, queryResult)
 	}
 
@@ -186,42 +186,43 @@ func (s *SmartContract) AppraiseCar(ctx contractapi.TransactionContextInterface,
 
 	return ctx.GetStub().PutState(carNumber, carAsBytes)
 }
+
 /*********************************************************************************************************************************************************/
 func (s *SmartContract) RegisterUser(ctx contractapi.TransactionContextInterface, customerNumber string, customerName string) error {
 	startKey := ""
 	endKey := ""
-	
+
 	resultsIterator, err := ctx.GetStub().GetStateByRange(startKey, endKey)
 
 	if err != nil {
-		return nil, err
+		return err
 	}
 	defer resultsIterator.Close()
 
-	results := []QueryResult{}
+	results := []QueryCustomerResult{}
 
 	for resultsIterator.HasNext() {
 		queryResponse, err := resultsIterator.Next()
 
 		if err != nil {
-			return nil, err
+			return err
 		}
 
 		customer := new(Customer)
 		_ = json.Unmarshal(queryResponse.Value, customer)
 
-		queryResult := QueryResult{Key: queryResponse.Key, Record: customer}
+		queryResult := QueryCustomerResult{Key: queryResponse.Key, Record: customer}
 		results = append(results, queryResult)
 	}
 
-	for _, value range results {
-		if value.Name == customerName{
-			return nil, fmt.Errorf("%s is already exist", customerName)
+	for _, value := range results {
+		if value.Record.Name == customerName {
+			return fmt.Errorf("%s is already exist", customerName)
 		}
 	}
 
 	customer := Customer{
-		Name: customerName,
+		Name:   customerName,
 		Amount: 0,
 	}
 
@@ -247,16 +248,13 @@ func (s *SmartContract) QueryCustomer(ctx contractapi.TransactionContextInterfac
 	return customer, nil
 }
 
-
-
-
 func (s *SmartContract) ChangeCarOwner(ctx contractapi.TransactionContextInterface, carNumber string, buyerNumber string, sellerNumber string) error {
 	car, err_car := s.QueryCar(ctx, carNumber)
 	buyer, err_buyer := s.QueryCustomer(ctx, buyerNumber)
 	seller, err_seller := s.QueryCustomer(ctx, sellerNumber)
 
-	if err_car != nil || err_customer != nil || err_seller != nil {
-		return err
+	if err_car != nil || err_buyer != nil || err_seller != nil {
+		return fmt.Errorf("error")
 	}
 
 	if car.MeasuredPrice == 0 {
@@ -278,7 +276,7 @@ func (s *SmartContract) ChangeCarOwner(ctx contractapi.TransactionContextInterfa
 	ctx.GetStub().PutState(carNumber, carAsBytes)
 	ctx.GetStub().PutState(buyerNumber, buyerAsBytes)
 	ctx.GetStub().PutState(sellerNumber, sellerAsBytes)
-	
+
 	return nil
 }
 
