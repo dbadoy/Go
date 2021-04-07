@@ -23,7 +23,7 @@ type Book struct {
 
 type QueryResult struct {
 	Key string `json:"Key"`
-	Record *Car
+	Record *Book
 }
 
 type Index struct{
