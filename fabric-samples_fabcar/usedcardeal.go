@@ -38,7 +38,7 @@ type Customer struct {
 type QueryCarResult struct {
 	Key    string `json:"Key"`
 	Record *Car
-}
+} // Key 수정필요
 
 type QueryCustomerResult struct {
 	Key    string `json:"Key"`
@@ -207,7 +207,7 @@ func (s *SmartContract) RegisterUser(ctx contractapi.TransactionContextInterface
 		if err != nil {
 			return err
 		}
-
+		
 		customer := new(Customer)
 		_ = json.Unmarshal(queryResponse.Value, customer)
 
