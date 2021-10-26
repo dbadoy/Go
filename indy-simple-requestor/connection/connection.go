@@ -26,7 +26,7 @@ func GetGenesisFile(pool string) (genesisFile io.ReadCloser, endorserSeed string
 		return
 	}
 
-	if err != err {
+	if err != nil {
 		return
 	}
 

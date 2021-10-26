@@ -9,7 +9,7 @@ import (
 	"did"
 
 	"github.com/hyperledger/indy-vdr/wrappers/golang/vdr"
-    "github.com/hyperledger/indy-vdr/wrappers/golang/crypto"
+        "github.com/hyperledger/indy-vdr/wrappers/golang/crypto"
 
 	"github.com/gin-gonic/gin"
 	"net/http"
