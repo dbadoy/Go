@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package KVstore;
+
+option go_package = "github.com/KVstore";
+
+service KVstore {
+    rpc Get (GetRequest) returns (GetResponse);
+    rpc Set (SetRequest) returns (SetResponse);
+}
+
+message GetRequest { 
+    string Key = 1;
+}
+message GetResponse {
+    string Value = 1;
+}
+
+message SetRequest {
+    string Key = 1;
+    string Value = 2;
+}
+message SetResponse {
+    string Key = 1;
+}
